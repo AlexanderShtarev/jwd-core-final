@@ -1,5 +1,8 @@
 package com.epam.jwd.core_final.domain;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * crew {@link java.util.Map<Role, Short>}
  * flightDistance {@link Long} - total available flight distance
@@ -7,4 +10,58 @@ package com.epam.jwd.core_final.domain;
  */
 public class Spaceship extends AbstractBaseEntity {
     //todo
+    private Map<Role, Short> crew;
+    private Map<Role, Short> assignedCrew;
+    private Long flightDistance;
+    private Boolean isReadyForNextMissions;
+
+    public Spaceship(String name, Map<Role, Short> crew, Long flightDistance) {
+        super(name);
+        this.crew = crew;
+        this.flightDistance = flightDistance;
+        isReadyForNextMissions = true;
+    }
+
+    public Map<Role, Short> getCrew() {
+        return crew;
+    }
+
+    public void setCrew(Map<Role, Short> crew) {
+        this.crew = crew;
+    }
+
+    public Map<Role, Short> getAssignedCrew() {
+        return assignedCrew;
+    }
+
+    public void setAssignedCrew(Map<Role, Short> assignedCrew) {
+        this.assignedCrew = assignedCrew;
+    }
+
+    public Long getFlightDistance() {
+        return flightDistance;
+    }
+
+    public void setFlightDistance(Long flightDistance) {
+        this.flightDistance = flightDistance;
+    }
+
+    public Boolean getReadyForNextMissions() {
+        return isReadyForNextMissions;
+    }
+
+    public void setReadyForNextMissions(Boolean readyForNextMissions) {
+        isReadyForNextMissions = readyForNextMissions;
+    }
+
+    @Override
+    public String toString() {
+        return "\nSpaceship{" +
+                "id: " + getId() +
+                ", name: " + getName() +
+                ", crew: " + crew +
+                ", flightDistance: " + flightDistance +
+                ", isReadyForNextMissions: " + isReadyForNextMissions +
+                '}';
+    }
 }
