@@ -5,6 +5,7 @@ import com.epam.jwd.core_final.criteria.FlightMissionCriteria;
 import com.epam.jwd.core_final.domain.FlightMission;
 import com.epam.jwd.core_final.domain.MissionResult;
 import com.epam.jwd.core_final.exception.UnknownEntityException;
+import com.epam.jwd.core_final.service.impl.CrewServiceImpl;
 import com.epam.jwd.core_final.service.impl.MissionServiceImpl;
 import com.epam.jwd.core_final.service.impl.SpaceshipServiceImpl;
 import org.slf4j.Logger;
@@ -76,6 +77,7 @@ public class NewGameInterface implements UserInterface {
                     SpaceshipServiceImpl.SPACESHIP_SERVICE.assignSpaceshipOnMission(flightMission);
                     LOGGER.info("Spaceship assigned");
                     System.out.println("Spaceship " + flightMission.getAssignedSpaceShip().getName() + " was assigned");
+                    CrewServiceImpl.CREW_SERVICE.assignCrewMembersOnMission(flightMission);
                     LOGGER.info("Crew assigned");
                 } catch (UnknownEntityException ex) {
                     LOGGER.error("Available ship not found");
@@ -85,8 +87,7 @@ public class NewGameInterface implements UserInterface {
                     break;
                 }
                 flightMission.setMissionResult(MissionResult.IN_PROGRESS);
-                LocalDateTime localDateTime = LocalDateTime.now();
-                flightMission.setStartDate(localDateTime);
+                flightMission.setStartDate(LocalDateTime.now());
                 break;
             case 0:
                 break;

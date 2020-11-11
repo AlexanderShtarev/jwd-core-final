@@ -13,7 +13,6 @@ import com.epam.jwd.core_final.service.impl.SpaceshipServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.epam.jwd.core_final.context.impl.menu.MainInterface.SCANNER;
@@ -49,34 +48,18 @@ public class FindMissionInterface implements UserInterface {
         }
     }
 
-    private static FlightMission setResult() {
+    private static void setResult() {
         Random random = new Random();
-        if (MissionServiceImpl.MISSION_SERVICE.findAllMissions().isEmpty()) {
-            LOGGER.info("Update mission - mission list is empty");
-            return null;
-        } else {
-            LOGGER.info("Updating mission");
-            int rand = random.nextInt(NassaContext.NASSA_CONTEXT.retrieveBaseEntityList(FlightMission.class).size());
-            System.out.println(rand);
-            Optional<FlightMission> flightMission = MissionServiceImpl.MISSION_SERVICE.findMissionByCriteria(
-                    new FlightMissionCriteria.Builder() {{
-                        id((long) rand);
-                    }}.build());
-            if (flightMission.isEmpty()) return null;
-            if ((flightMission.get().getMissionResult() != MissionResult.FAILED)
-                    && (flightMission.get().getMissionResult() != MissionResult.CANCELLED)
-                    && (flightMission.get().getMissionResult() != MissionResult.COMPLETED)
-                    && (flightMission.get().getMissionResult() != MissionResult.PLANNED)) {
-                if (rand < NassaContext.NASSA_CONTEXT.retrieveBaseEntityList(CrewMember.class).size()) {
-                    int newRand = random.nextInt(3);
-                    if (newRand == 0) flightMission.get().setMissionResult(MissionResult.FAILED);
-                    if (newRand == 1) flightMission.get().setMissionResult(MissionResult.COMPLETED);
-                    if (newRand == 2) flightMission.get().setMissionResult(MissionResult.IN_PROGRESS);
-                    flightMission.get().setEndDate(LocalDateTime.now());
-                }
-            }
+        LOGGER.info("Updating mission");
+        Optional<FlightMission> flightMission = MissionServiceImpl.MISSION_SERVICE.findMissionByCriteria(
+                new FlightMissionCriteria.Builder() {{
+                    missionResult(MissionResult.IN_PROGRESS);
+                }}.build());
+        if (flightMission.isPresent()) {
+            int rnd = random.nextInt(6);
+            if (rnd == 0) flightMission.get().setMissionResult(MissionResult.COMPLETED);
+            if (rnd == 1) flightMission.get().setMissionResult(MissionResult.FAILED);
         }
-        return null;
     }
 
     private void handleInput(int input) {
@@ -104,29 +87,19 @@ public class FindMissionInterface implements UserInterface {
                 if (flightMission.isEmpty()) System.out.println("Mission not found");
                 break;
             case 3:
+                MissionResult missionResult;
+                int result = scanner.nextInt();
                 LOGGER.info("Finding Mission by Status");
                 System.out.println(Arrays.toString(MissionResult.values()));
                 System.out.println("Mission status(1,2,3,4,5):");
-                int result = scanner.nextInt();
-                MissionResult missionResult = null;
-                while ((result < 1) || (result > 5)) {
-                    result = scanner.nextInt();
-                    if (result == 1) missionResult = MissionResult.PLANNED;
-                    if (result == 2) missionResult = MissionResult.IN_PROGRESS;
-                    if (result == 3) missionResult = MissionResult.CANCELLED;
-                    if (result == 4) missionResult = MissionResult.COMPLETED;
-                    if (result == 5) missionResult = MissionResult.FAILED;
-                }
+                missionResult = MissionResult.resolveMissionResultById(result);
 
                 MissionResult finalMissionResult = missionResult;
-                List<FlightMission> flightMissionList = MissionServiceImpl.MISSION_SERVICE.findAllMissionsByCriteria(new FlightMissionCriteria.Builder() {{
+                List<FlightMission> missionList = MissionServiceImpl.MISSION_SERVICE.findAllMissionsByCriteria(new FlightMissionCriteria.Builder() {{
                     missionResult(finalMissionResult);
                 }}.build());
-                if (flightMissionList.isEmpty()) {
-                    System.out.println("Mission not found");
-                } else {
-                    flightMissionList.forEach(System.out::println);
-                }
+                if (missionList.isEmpty()) System.out.println("Missions not found");
+                missionList.forEach(System.out::println);
                 break;
             case 4:
                 LOGGER.info("Finding Mission by assigned Ship");

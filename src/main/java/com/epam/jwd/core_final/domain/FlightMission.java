@@ -38,8 +38,9 @@ public class FlightMission extends AbstractBaseEntity {
         assignedCrew.add(crewMember);
     }
 
-    public LocalDateTime getEndDate() {
-        return endDate;
+    public String getEndDate() {
+        return endDate.format(DateTimeFormatter
+                .ofPattern((ApplicationProperties.APPLICATION_PROPERTIES.getDateTimeFormat())));
     }
 
     public Long getDistance() {
@@ -55,9 +56,8 @@ public class FlightMission extends AbstractBaseEntity {
     }
 
     public String getStartDate() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-                ApplicationProperties.APPLICATION_PROPERTIES.getDateTimeFormat());
-        return startDate.format(dateTimeFormatter);
+        return startDate.format(DateTimeFormatter
+                .ofPattern((ApplicationProperties.APPLICATION_PROPERTIES.getDateTimeFormat())));
     }
 
     public void setStartDate(LocalDateTime startDate) {

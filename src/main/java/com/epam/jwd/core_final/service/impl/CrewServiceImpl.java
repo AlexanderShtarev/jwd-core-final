@@ -29,7 +29,8 @@ public class CrewServiceImpl implements CrewService {
         List<CrewMember> crewMembers = findAllCrewMembers();
         CrewMemberCriteria crewMemberCriteria = (CrewMemberCriteria) criteria;
         return crewMembers.stream().filter(crewMember -> (
-                (crewMember.getName().equals(crewMemberCriteria.getName()) || crewMemberCriteria.getName() == null)
+                (crewMemberCriteria.getId() == null || crewMember.getId() == crewMemberCriteria.getId())
+                        && (crewMember.getName().equals(crewMemberCriteria.getName()) || crewMemberCriteria.getName() == null)
                         && (crewMember.getRank() == crewMemberCriteria.getRank() || crewMemberCriteria.getRank() == null)
                         && (crewMember.isReadyForNextMissions() == crewMemberCriteria.getReadyForNextMissions() || crewMemberCriteria.getReadyForNextMissions() == null)
                         && (crewMember.getRole() == crewMemberCriteria.getRole() || crewMemberCriteria.getRole() == null)
@@ -41,7 +42,8 @@ public class CrewServiceImpl implements CrewService {
         List<CrewMember> crewMembers = findAllCrewMembers();
         CrewMemberCriteria crewMemberCriteria = (CrewMemberCriteria) criteria;
         return crewMembers.stream().filter(crewMember -> (
-                (crewMemberCriteria.getName() == null || crewMember.getName().equals(crewMemberCriteria.getName()))
+                (crewMemberCriteria.getId() == null || crewMember.getId() == crewMemberCriteria.getId())
+                        && (crewMemberCriteria.getName() == null || crewMember.getName().equals(crewMemberCriteria.getName()))
                         && (crewMemberCriteria.getRank() == null || crewMember.getRank() == crewMemberCriteria.getRank())
                         && (crewMemberCriteria.getReadyForNextMissions() == null || crewMember.isReadyForNextMissions() == crewMemberCriteria.getReadyForNextMissions())
                         && (crewMemberCriteria.getRole() == null || crewMember.getRole() == crewMemberCriteria.getRole())
@@ -87,17 +89,13 @@ public class CrewServiceImpl implements CrewService {
                                 role(role);
                                 isReadyForNextMissions(true);
                             }}.build());
-                    System.out.println(crewMember.toString());
                     if (crewMember.isPresent()) {
                         crewMember.get().setReadyForNextMissions(false);
-                        System.out.println(crewMember.toString());
                         assignedCrew.put(crewMember.get().getRole(), (short) (i + 1)); //starts from one
                     }
                 }
             }
         }
-        System.out.println(assignedCrew.toString());
-        System.out.println(requiredCrew.toString());
         if (!requiredCrew.equals(assignedCrew)) throw new IllegalArgumentException("Not enough crew members");
         spaceship.setAssignedCrew(assignedCrew);
     }

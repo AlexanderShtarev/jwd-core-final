@@ -54,7 +54,13 @@ public class UpdateEntityInterface implements UserInterface {
                         new CrewMemberCriteria.Builder() {{
                             id(crewMemberId);
                         }}.build());
-                crewMember.ifPresent(CrewServiceImpl.CREW_SERVICE::updateCrewMemberDetails);
+                if (crewMember.isPresent()) {
+                    if (crewMember.get().isReadyForNextMissions()) {
+                        crewMember.ifPresent(CrewServiceImpl.CREW_SERVICE::updateCrewMemberDetails);
+                    } else {
+                        System.out.println("Unable to update crew member when he on mission");
+                    }
+                }
                 if (crewMember.isEmpty()) System.out.println("Crew member with such id did not exist");
                 break;
             case 2:
@@ -67,7 +73,13 @@ public class UpdateEntityInterface implements UserInterface {
                             id(spaceshipId);
                         }}.build()
                 );
-                spaceship.ifPresent(SpaceshipServiceImpl.SPACESHIP_SERVICE::updateSpaceshipDetails);
+                if (spaceship.isPresent()) {
+                    if (spaceship.get().getReadyForNextMissions()) {
+                        SpaceshipServiceImpl.SPACESHIP_SERVICE.updateSpaceshipDetails(spaceship.get());
+                    } else {
+                        System.out.println("Unable to update spaceship when it on mission");
+                    }
+                }
                 if (spaceship.isEmpty()) System.out.println("Spaceship with this id did not exist");
                 break;
             case 3:
@@ -80,7 +92,13 @@ public class UpdateEntityInterface implements UserInterface {
                             id(missionId);
                         }}.build()
                 );
-                flightMission.ifPresent(MissionServiceImpl.MISSION_SERVICE::updateMissionDetails);
+                if (flightMission.isPresent()) {
+                    if (flightMission.get().getMissionResult() != MissionResult.IN_PROGRESS) {
+                        MissionServiceImpl.MISSION_SERVICE.updateMissionDetails(flightMission.get());
+                    } else {
+                        System.out.println("Unable to update mission when it active");
+                    }
+                }
                 if (flightMission.isEmpty()) System.out.println("Flight mission with this id did not exist");
                 break;
             case 0:

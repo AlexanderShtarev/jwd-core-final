@@ -57,7 +57,6 @@ public class FindCrewInterface implements UserInterface {
                 }}.build());
                 crewMember.ifPresent(crewMember1 -> System.out.println(crewMember.get().toString()));
                 if (crewMember.isEmpty()) System.out.println("Crew Member not found");
-                scanner.close();
                 break;
             case 2:
                 LOGGER.info("Finding Crew Member by Id");
@@ -68,7 +67,6 @@ public class FindCrewInterface implements UserInterface {
                 }}.build());
                 crewMember.ifPresent(crewMember1 -> System.out.println(crewMember.get().toString()));
                 if (crewMember.isEmpty()) System.out.println("Crew Member not found");
-                scanner.close();
                 break;
             case 3:
                 LOGGER.info("Finding Crew Member by Role and Rank");
@@ -87,7 +85,6 @@ public class FindCrewInterface implements UserInterface {
                     System.out.println("Unknown entity id");
                     LOGGER.error("Unknown entity id");
                 }
-                scanner.close();
                 break;
             case 4:
                 LOGGER.info("Finding Crew Member by Mission Readiness");
@@ -98,14 +95,12 @@ public class FindCrewInterface implements UserInterface {
                 }}.build());
                 crewMember.ifPresent(crewMember1 -> System.out.println(crewMember.get().toString()));
                 if (crewMember.isEmpty()) System.out.println("Crew Member not found");
-                scanner.close();
                 break;
             case 5:
                 LOGGER.info("Finding All Crew Members");
                 List<CrewMember> crewMembers = CrewServiceImpl.CREW_SERVICE.findAllCrewMembers();
                 if (crewMembers.isEmpty()) System.out.println("You do not have any crew members");
                 else System.out.println(Arrays.toString(crewMembers.toArray()));
-                scanner.close();
                 break;
             case 0:
                 break;
