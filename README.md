@@ -1,29 +1,90 @@
-#JWD Final Java core task
-##Requirements 
-* Fork this [git repository](https://github.com/Rement/jwd-core-final)
-* You should not remove MY comments
-* You have to follow [Java code conventions](https://www.oracle.com/java/technologies/javase/codeconventions-contents.html) ! 
-* Code must compile 
-* You have to do the latest commit before **23:59 7th November (Minsk time)**
-* Use slf4j for logging your actions (You should store INFO or higher messages in output log files, which have 5 generations)
-* You are NOT able to use any codegenerators (i.e. Lombok)
-* Console input should be done using java.util.Scanner
-* First row in input files contains fields order for corresponding entity
+drop schema if exists space_program;
 
-###Mandatory tasks: 
-* In domain package update POJO based on requirements
-* Implements service interfaces
-* Extend missed criteria implementations
-* Update custom exception with meaningful messages (feel free to create your own exceptions, if you need them)
-* Populate context with missing implementation
-* Design UI for ApplicationMenu (user should be able to get/update information about CrewMembers, Spaceships. 
-Able to create/update mission information). 
-Able to write information about selected mission(s) in output file in json format
+create schema if not exists space_program;
 
+create table if not exists space_program.flight_mission
+(
+    id                INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name              VARCHAR(20)     NOT NULL,
+    distance          BIGINT          NOT NULL CHECK (distance > 0 ),
+    start             DATETIME,
+    end               DATETIME,
+    mission_result_id INT
+);
 
+create table if not exists space_program.spaceship
+(
+    id                        INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name                      VARCHAR(20)     NOT NULL UNIQUE,
+    flight_distance           BIGINT          NOT NULL CHECK ( flight_distance > 0 ),
+    is_ready_for_next_mission BOOL DEFAULT TRUE,
+    flight_mission_id         INT
+);
 
+create table if not exists space_program.crew_member
+(
+    id                        INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name                      VARCHAR(20)     NOT NULL UNIQUE,
+    role_id                   INT CHECK ( role_id > 0),
+    rank_id                   INT CHECK ( rank_id > 0),
+    is_ready_for_next_mission BOOL DEFAULT TRUE,
+    spaceship_id              INT
+);
 
-###Additional tasks:
-* Create tests using Junit, Mockito for your functionality
-* Implement additional option in a menu (for mission) with real-time flight-status
-* Discuss with mentor any improvements, you want to implement 
+create table if not exists space_program.role
+(
+    id   INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(25)     NOT NULL
+);
+
+create table if not exists space_program.rank
+(
+    id   INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(25)     NOT NULL
+);
+
+create table if not exists space_program.mission_result
+(
+    id   INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(25)     NOT NULL
+);
+
+INSERT INTO space_program.rank
+VALUES (1, 'CAPTAIN'),
+       (2, 'NEWBIE'),
+       (3, 'OLD GRIND MASTER');
+
+INSERT INTO space_program.role
+VALUES (1, 'PILOT'),
+       (2, 'YANG'),
+       (3, 'MOICHIK');
+
+INSERT INTO space_program.mission_result
+VALUES (1, 'PLANNED'),
+       (2, 'COMPLETED'),
+       (3, 'CANCELED');
+
+INSERT INTO space_program.crew_member
+    VALUE
+    (1, 'Alex', 1, 1, 1, NULL);
+
+INSERT INTO space_program.spaceship
+    VALUE
+    (1, 'Alex spaceship', 99999, default, NULL);
+
+INSERT INTO space_program.flight_mission
+    VALUE
+    (1, 'First mission', 9999, localtime, null, 1);
+
+UPDATE space_program.crew_member
+SET crew_member.spaceship_id = 1
+WHERE crew_member.name = 'Alex';
+
+UPDATE space_program.spaceship
+SET space_program.spaceship.flight_mission_id = 1
+WHERE is_ready_for_next_mission = TRUE;
+
+UPDATE space_program.flight_mission
+SET flight_mission.end               = localtime,
+    flight_mission.mission_result_id = 2
+WHERE mission_result_id = 1
